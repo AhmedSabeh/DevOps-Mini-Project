@@ -1,4 +1,3 @@
-Deploy a containerized web application on AWS EKS using Docker, Git, Terraform, and Ansible
 # 🚀 DevOps Mini Project — Full Stack Deployment on AWS with Docker, Kubernetes, Terraform, and Ansible
 
 This is a hands-on mini project that brings together the essential tools in the DevOps toolkit. The goal is to deploy a simple web application to an EKS cluster using Docker, Kubernetes, Terraform, Ansible, and AWS services.
