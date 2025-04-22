@@ -1,0 +1,55 @@
+- name: Setup admin instance
+  hosts: admin
+  become: yes
+
+  tasks:
+    - name: Install required packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker
+        - git
+        - unzip
+        - curl
+
+    - name: Enable Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Install AWS CLI v2
+      get_url:
+        url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+        dest: "/tmp/awscliv2.zip"
+
+    - name: Unzip AWS CLI installer
+      unarchive:
+        src: /tmp/awscliv2.zip
+        dest: /tmp
+        remote_src: yes
+
+    - name: Run AWS CLI installer
+      command: "/tmp/aws/install"
+
+    - name: Install eksctl
+      get_url:
+        url: "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz"
+        dest: "/tmp/eksctl.tar.gz"
+
+    - name: Extract eksctl
+      unarchive:
+        src: /tmp/eksctl.tar.gz
+        dest: /tmp
+        remote_src: yes
+
+    - name: Move eksctl to /usr/local/bin
+      command: mv /tmp/eksctl /usr/local/bin/eksctl
+
+    - name: Install kubectl
+      get_url:
+        url: "https://dl.k8s.io/release/v1.27.0/bin/linux/amd64/kubectl"
+        dest: "/usr/local/bin/kubectl"
+        mode: '0755'
+
