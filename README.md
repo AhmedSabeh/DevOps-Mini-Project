@@ -72,8 +72,6 @@ ansible-playbook -i inventory.ini playbook.yml
 On the EC2 admin box:
 
 ```bash
-Copy
-Edit
 cd ~/demo-app
 docker build -t devops-demo-app .
 ```
