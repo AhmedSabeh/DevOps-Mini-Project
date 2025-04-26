@@ -4,9 +4,21 @@ provider "aws" {
 
 # Create ECR repo for Docker image
 resource "aws_ecr_repository" "app_repo" {
-  name = "flask-devops-app"
+  name = "flask-devops-app"  # You can use your desired name here (e.g., flask-devops-app or devops-demo-app)
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+
+  tags = {
+    Name = "devops-demo-app"
+  }
 }
 
+output "ecr_repo_url" {
+  value = aws_ecr_repository.app_repo.repository_url
+}
+
+# VPC setup using terraform-aws-modules
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.1.0"
@@ -26,6 +38,7 @@ module "vpc" {
   }
 }
 
+# EKS setup using terraform-aws-modules
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.cluster_name
@@ -49,8 +62,9 @@ module "eks" {
   }
 }
 
+# Admin EC2 instance for Ansible setup
 resource "aws_instance" "admin" {
-  ami           = "ami-0c7217cdde317cfec" # Amazon Linux 2 in us-east-1
+  ami           = "ami-0c7217cdde317cfec"  # Amazon Linux 2 AMI for us-east-1
   instance_type = "t2.micro"
   subnet_id     = module.vpc.public_subnets[0]
   key_name      = var.key_pair_name
@@ -75,18 +89,3 @@ resource "aws_instance" "admin" {
 output "admin_public_ip" {
   value = aws_instance.admin.public_ip
 }
-
-resource "aws_ecr_repository" "app_repo" {
-  name = "devops-demo-app"
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-  tags = {
-    Name = "devops-demo-app"
-  }
-}
-
-output "ecr_repo_url" {
-  value = aws_ecr_repository.app_repo.repository_url
-}
-
