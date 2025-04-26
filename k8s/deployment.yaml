@@ -13,8 +13,8 @@ spec:
         app: demo
     spec:
       containers:
-      - name: nginx
+      - name: devops-demo-app
         image: <your-ecr-url>:v1
         ports:
-        - containerPort: 80
+        - containerPort: 5000
 
